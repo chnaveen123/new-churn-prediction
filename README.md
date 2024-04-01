@@ -1,38 +1,35 @@
-# Customer-Churn-Prediction:
-### Project Demo Link - [Click Here](https://customer-churn-predictions.herokuapp.com/)
-![Churn](https://user-images.githubusercontent.com/90024661/135493461-457a32f2-c03a-4dfa-a9e7-1d1a362dd5f1.png)
+## MLOps for SageMaker Endpoint Deployment
 
-  Churn prediction means detecting which customers are likely to cancel a subscription to a service based on how they use the service. It is a critical prediction for many businesses because acquiring new clients often costs more than retaining existing ones. Once you can identify those customers that are at risk of cancelling, you should know exactly what marketing action to take for each individual customer to maximise the chances that the customer will remain.
-#### **Why is it so important?**
-  Customer churn is a common problem across businesses in many sectors. If you want to grow as a company, you have to invest in acquiring new clients. Every time a client leaves, it represents a significant investment lost. Both time and effort need to be channelled into replacing them. Being able to predict when a client is likely to leave, and offer them incentives to stay, can offer huge savings to a business.
-#### **About This Project:**
-  * In our dataset, Total amount of Monthly charges are around 16,056,169$ from that 18% of amount loss around 2862927% Due to the customer churn.        
-  * Total number of customer around 7043 but 27% of people to be churn which around 1869 customer from the overall customer, 
-  * So we need to predict the person who are all wants to be churn.Its very important to that company because they want new customer as well as retain the previous customer to stay in there company.
-#### Steps involved in Model Deployment:
-  * Data Analysis (EDA)
-  * Data Preprocessing.
-  * Feature Engineering. 
-  * Feature Selection (SelectKBest)
-  * Fit into Algorithm (ML Algorithm)
-  * Hyper Parameter Tunning (RandomSearchCV)
-  * Dump model (Pickle)
-  * Creating Web Application using Flask
-  * Deployed in Web using heroku platform
-#### Packages Used:
-This project requires **Python** and the following packages are in below:
-  * [Numpy](https://numpy.org/)
-  * [Pandas](https://pandas.pydata.org/)
-  * [Matplotlib](https://matplotlib.org/)
-  * [Seaborn](https://seaborn.pydata.org/)
-  * [Scikit-learn](https://scikit-learn.org/stable/)
-  * [Scipy](https://www.scipy.org/)
-  * [Imblearn](https://imbalanced-learn.org/stable/)
-  * [Counter](https://docs.python.org/3/library/collections.html)
-  * [Flask](https://flask.palletsprojects.com/en/2.0.x/)
-#### How To Run:
-  In this project, First you need to download dataset [Telco-Customer-churn.csv](https://github.com/satz2000/End-to-end-project---Customer-churn/blob/main/Telco-Customer-Churn.csv) Then open your commant prompt and run this code [pip install jupyterlab](https://jupyterlab.readthedocs.io/en/stable/getting_started/installation.html). After [pip install requirements.txt](https://github.com/satz2000/End-to-end-project---Customer-churn/blob/main/requirements.txt) all packages are needed in this project are automatically installed on your machine. After Download [app.py](https://github.com/satz2000/End-to-end-project---Customer-churn/blob/main/app.py) files and run [TelecomCustomerChurn.ipynb](https://github.com/satz2000/End-to-end-project---Customer-churn/blob/main/TelecomCustomerChurn.ipynb) files  into your machine And some inputs to check our model and Its accuracy of prediction
-#### Objective:
-  Predict the customer likely to be Churn or not by using Gradient Boost Classifier and my target is to find customer to be Churn or Not.
-  
-Project Demo Link - [Click Here](https://customer-churn-predictions.herokuapp.com/)
+This is a sample code repository for demonstrating how you can organize your code for deploying an realtime inference Endpoint infrastructure. This code repository is created as part of creating a Project in SageMaker. 
+
+This code repository has the code to find the latest approved ModelPackage for the associated ModelPackageGroup and automaticaly deploy it to the Endpoint on detecting a change (`build.py`). This code repository also defines the CloudFormation template which defines the Endpoints as infrastructure. It also has configuration files associated with `staging` and `prod` stages. 
+
+Upon triggering a deployment, the CodePipeline pipeline will deploy 2 Endpoints - `staging` and `prod`. After the first deployment is completed, the CodePipeline waits for a manual approval step for promotion to the prod stage. You will need to go to CodePipeline AWS Managed Console to complete this step.
+
+You own this code and you can modify this template to change as you need it, add additional tests for your custom validation. 
+
+A description of some of the artifacts is provided below:
+
+
+## Layout of the SageMaker ModelBuild Project Template
+
+`buildspec.yml`
+ - this file is used by the CodePipeline's Build stage to build a CloudFormation template.
+
+`build.py`
+ - this python file contains code to get the latest approve package arn and exports staging and configuration files. This is invoked from the Build stage.
+
+`endpoint-config-template.yml`
+ - this CloudFormation template file is packaged by the build step in the CodePipeline and is deployed in different stages.
+
+`staging-config.json`
+ - this configuration file is used to customize `staging` stage in the pipeline. You can configure the instance type, instance count here.
+
+`prod-config.json`
+ - this configuration file is used to customize `prod` stage in the pipeline. You can configure the instance type, instance count here.
+
+`test\buildspec.yml`
+  - this file is used by the CodePipeline's `staging` stage to run the test code of the following python file
+
+`test\test.py`
+  - this python file contains code to describe and invoke the staging endpoint. You can customize to add more tests here.
